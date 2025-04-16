@@ -1,0 +1,21 @@
+data_ingestion:
+  raw_data_dir: data/raw
+  ingested_dir: data/ingested
+  train_file: train.csv
+  test_file: test.csv
+
+data_transformation:
+  transformed_dir: data/transformed
+  scaler_path: artifacts/scaler.pkl
+  window_size: 24
+
+model_training:
+  model_dir: artifacts/models
+  model_name: transformer_forecast.pt
+  batch_size: 32
+  epochs: 20
+  learning_rate: 0.001
+
+evaluation:
+  metrics_dir: artifacts/metrics
+  report_file: report.json

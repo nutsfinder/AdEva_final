@@ -1,0 +1,40 @@
+stages:
+  ingest:
+    cmd: python src/AdEva_final/pipeline/data_ingestion.py
+    deps:
+      - src/AdEva_final/pipeline/data_ingestion.py
+      - config/config.yaml
+      - data/raw/*.csv
+    outs:
+      - data/ingested/train.csv
+      - data/ingested/test.csv
+
+  transform:
+    cmd: python src/AdEva_final/pipeline/data_transformation.py
+    deps:
+      - src/AdEva_final/pipeline/data_transformation.py
+      - params.yaml
+      - data/ingested/train.csv
+      - data/ingested/test.csv
+    outs:
+      - data/transformed/X_train.npy
+      - data/transformed/y_train.npy
+      - data/transformed/X_test.npy
+      - data/transformed/y_test.npy
+      - artifacts/scaler.pkl
+
+  train:
+    cmd: python src/AdEva_final/pipeline/model_trainer.py
+    deps:
+      - src/AdEva_final/pipeline/model_trainer.py
+      - data/transformed/*.npy
+    outs:
+      - artifacts/models/transformer_forecast.pt
+
+  evaluate:
+    cmd: python src/AdEva_final/pipeline/evaluation.py
+    deps:
+      - src/AdEva_final/pipeline/evaluation.py
+      - artifacts/models/transformer_forecast.pt
+    outs:
+      - artifacts/metrics/report.json

@@ -1,0 +1,15 @@
+# Data manipulation
+numpy>=1.24.0
+pandas>=1.5.0
+
+# Scikit‑learn for preprocessing & metrics
+scikit-learn>=1.2.2
+
+# YAML config parsing
+PyYAML>=6.0
+
+# Deep learning
+torch>=2.0.1
+
+# Reproducible pipelines
+dvc>=2.30.0

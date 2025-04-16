@@ -1,0 +1,45 @@
+# .github/workflows/ci-cd.yaml
+name: Forecasting CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build_and_test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python & DVC
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8.3"
+      - run: pip install dvc
+
+      - name: Install dependencies
+        run: |
+          conda env update -f environment.yml --prune
+          conda activate adeva_env
+
+      - name: Pull data artifacts
+        run: dvc pull -j 4
+
+      - name: Dry‑run pipeline
+        run: dvc repro --dry
+
+      - name: Smoke‑test imports
+        run: |
+          python - <<EOF
+          import numpy,pandas,sklearn,torch,yaml,dvc
+          print("Imports OK")
+          EOF
+
+      - name: Run unit tests
+        run: pytest --maxfail=1 --disable-warnings -q
+
+      - name: Report metrics diff
+        run: dvc metrics diff

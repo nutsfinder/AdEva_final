@@ -1,0 +1,18 @@
+name: adeva_env
+channels:
+  - defaults
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.10
+  - numpy>=1.24.0
+  - pandas>=1.5.0
+  - scikit-learn>=1.2.2
+  - pyyaml>=6.0
+  - pip
+  # install torch via conda for best CUDA support:
+  - pytorch>=2.0.1
+  - cudatoolkit=11.7 # or omit if you want CPU‑only
+  # DVC currently ships via pip
+  - pip:
+      - dvc>=2.30.0

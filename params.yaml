@@ -1,0 +1,4 @@
+window_size: 24
+batch_size: 32
+epochs: 20
+learning_rate: 0.001
