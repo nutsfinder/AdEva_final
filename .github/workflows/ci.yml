@@ -2,13 +2,12 @@ name: Forecasting CI (Self‑Hosted)
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   test:
-    # Switch to your self‑hosted Windows runner that has access to your Desktop
     runs-on: [self-hosted, windows]
 
     steps:
@@ -20,7 +19,7 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install dependencies via pip
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -28,12 +27,11 @@ jobs:
 
       - name: Configure local DVC remote
         run: |
-          # Define the Desktop folder as the default remote
-          dvc remote add -f local "C:/Users/21652/Desktop/dvc_remote_storage"
-          dvc remote modify local default true
+          # -d means “set this remote as default”
+          dvc remote add -d local "C:/Users/21652/Desktop/dvc_remote_storage" || echo "remote already exists"
 
       - name: Pull DVC artifacts
-        run: dvc pull -r local
+        run: dvc pull
 
       - name: Validate DVC pipeline
         run: dvc repro --dry
