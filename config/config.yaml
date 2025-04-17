@@ -19,3 +19,7 @@ model_training:
 evaluation:
   metrics_dir: artifacts/metrics
   report_file: report.json
+
+mlflow:
+  tracking_uri: file:///absolute/path/to/mlruns
+  experiment_name: adeva_forecasting

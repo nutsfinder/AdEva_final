@@ -16,3 +16,4 @@ dependencies:
   # DVC currently ships via pip
   - pip:
       - dvc>=2.30.0
+      - mlflow>=2.0.0

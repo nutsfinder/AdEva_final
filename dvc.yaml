@@ -4,7 +4,7 @@ stages:
     deps:
       - src/AdEva_final/pipeline/data_ingestion.py
       - config/config.yaml
-      - data/raw/*.csv
+      - data/raw
     outs:
       - data/ingested/train.csv
       - data/ingested/test.csv
@@ -27,7 +27,7 @@ stages:
     cmd: python src/AdEva_final/pipeline/model_trainer.py
     deps:
       - src/AdEva_final/pipeline/model_trainer.py
-      - data/transformed/*.npy
+      - data/transformed
     outs:
       - artifacts/models/transformer_forecast.pt
 
