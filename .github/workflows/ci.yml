@@ -1,4 +1,4 @@
-name: Forecasting CI
+name: Forecasting CI (Self‑Hosted)
 
 on:
   push:
@@ -8,7 +8,8 @@ on:
 
 jobs:
   test:
-    runs-on: windows-latest
+    # Switch to your self‑hosted Windows runner that has access to your Desktop
+    runs-on: [self-hosted, windows]
 
     steps:
       - name: Checkout code
@@ -23,11 +24,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          # install DVC core plus S3 support, and MLflow
-          pip install "dvc[s3]" mlflow
+          pip install dvc mlflow
+
+      - name: Configure local DVC remote
+        run: |
+          # Define the Desktop folder as the default remote
+          dvc remote add -f local "C:/Users/21652/Desktop/dvc_remote_storage"
+          dvc remote modify local default true
 
       - name: Pull DVC artifacts
-        run: dvc pull
+        run: dvc pull -r local
 
       - name: Validate DVC pipeline
         run: dvc repro --dry
