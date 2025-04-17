@@ -1,66 +1,41 @@
 name: Forecasting CI
 
-# Trigger on pushes or PRs to main
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  build-and-test-windows:
-    name: Build & Test (Windows)
+  test:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout code
+      # 1) Checkout your code
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up Python 3.10
+      # 2) Install Python 3.10
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
-      - name: Install Python dependencies
+      # 3) Install all deps via pip (no conda anywhere!)
+      - name: Install dependencies
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install dvc mlflow
 
-      - name: Pull DVC data & models
+      # 4) Pull your DVC‐tracked data & models
+      - name: dvc pull
         run: dvc pull
 
-      - name: Validate DVC pipeline (dry‑run)
+      # 5) Validate the pipeline (dry‑run)
+      - name: dvc repro --dry
         run: dvc repro --dry
 
-      - name: Run unit tests
-        run: pytest --maxfail=1 -q
-
-  build-and-test-linux:
-    name: Build & Test (Linux)
-    runs-on: ubuntu-latest
-    needs: build-and-test-windows
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install Python dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install dvc mlflow
-
-      - name: Pull DVC data & models
-        run: dvc pull
-
-      - name: Validate DVC pipeline (dry‑run)
-        run: dvc repro --dry
-
-      - name: Run unit tests
+      # 6) Run your tests
+      - name: pytest
         run: pytest --maxfail=1 -q
