@@ -1,0 +1,63 @@
+name: Forecasting CI
+
+# 1) Trigger on pushes & PRs to main
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    # 2) Choose your runner
+    runs-on: windows-latest
+
+    steps:
+      # 3) Checkout your code
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # needed by DVC
+
+      # 4) Set up Python & Conda
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Conda
+        uses: goanpeca/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: 3.10
+          activate-environment: adeva_env
+          environment-file: environment.yml
+          use-only-tar-bz2: true
+
+      # 5) Install DVC and authenticate remote
+      - name: Install DVC
+        run: |
+          pip install dvc
+
+      - name: Configure DVC remote creds
+        run: |
+          # example for AWS S3
+          dvc remote modify --local myremote access_key_id  ${{ secrets.AWS_ACCESS_KEY_ID }}
+          dvc remote modify --local myremote secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      # 6) Pull your large data & models
+      - name: Pull DVC artifacts
+        run: dvc pull -j4
+
+      # 7) Quick pipeline validation
+      - name: Dry‑run DVC pipeline
+        run: dvc repro --dry
+
+      # 8) Unit tests
+      - name: Run tests
+        run: pytest --maxfail=1 -q
+
+      # 9) (Optional) Smoke‑test MLflow UI
+      - name: Start MLflow UI
+        run: |
+          mlflow ui --backend-store-uri file:///$(pwd)/mlruns --host 127.0.0.1 --port 5000 &
