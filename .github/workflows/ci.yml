@@ -27,8 +27,7 @@ jobs:
 
       - name: Configure local DVC remote
         run: |
-          # -d means “set this remote as default”
-          dvc remote add -d local "C:/Users/21652/Desktop/dvc_remote_storage" || echo "remote already exists"
+          dvc remote add -d local "C:/Users/21652/Desktop/dvc_remote_storage" -f
 
       - name: Pull DVC artifacts
         run: dvc pull
