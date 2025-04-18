@@ -44,6 +44,8 @@ class ModelTrainer:
         loader  = DataLoader(dataset, batch_size=self.params["batch_size"], shuffle=True)
 
         with mlflow.start_run():
+            run_id = mlflow.active_run().info.run_id
+            print(f"📋 Active MLflow run_id: {run_id}")
             # log hyperparameters
             mlflow.log_params({
                 "window_size": X_train.shape[1],

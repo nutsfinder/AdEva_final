@@ -21,5 +21,5 @@ evaluation:
   report_file: report.json
 
 mlflow:
-  tracking_uri: file:///absolute/path/to/mlruns
+  tracking_uri: file:///C:/Users/21652/Desktop/AdEva_final/mlruns
   experiment_name: adeva_forecasting
