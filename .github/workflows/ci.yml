@@ -39,8 +39,8 @@ jobs:
 
       - name: Configure DVC remote
         run: |
-          dvc remote modify --local local path "C:/Users/21652/Desktop/dvc_remote_storage"
-          dvc remote default local
+          dvc remote add -d local "C:/Users/21652/Desktop/dvc_remote_storage"
+          dvc remote modify --local local push --jobs 4
 
       - name: Pull DVC‑tracked raw files
         run: dvc pull --run-cache
