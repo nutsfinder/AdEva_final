@@ -1,4 +1,9 @@
-window_size: 24
-batch_size: 32
-epochs: 20
-learning_rate: 0.001
+# sliding-window & forecasting horizon
+forecast_horizon: 7
+
+# transformer hyperparameters
+d_model: 64
+nhead: 4
+num_encoder_layers: 2
+dim_feedforward: 128
+dropout: 0.1

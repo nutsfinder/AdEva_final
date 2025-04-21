@@ -1,3 +1,4 @@
+# .github/workflows/ci.yml
 name: Forecasting CI (Self‑Hosted)
 
 on:
@@ -7,12 +8,23 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  ci:
     runs-on: [self-hosted, windows]
+    env:
+      # so that `import AdEva_final...` works when you run scripts directly
+      PYTHONPATH: ${{ github.workspace }}/src
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Cache pip & DVC cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            .dvc/cache
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
 
       - name: Setup Python 3.10
         uses: actions/setup-python@v4
@@ -23,18 +35,27 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install dvc mlflow pytest
+          pip install 'dvc[all]' mlflow pytest
 
-      - name: Configure local DVC remote
+      - name: Configure DVC remote
         run: |
-          dvc remote add -d local "C:/Users/21652/Desktop/dvc_remote_storage" -f
+          dvc remote modify --local local path "C:/Users/21652/Desktop/dvc_remote_storage"
+          dvc remote default local
 
-      - name: Pull DVC artifacts
-        run: dvc pull
+      - name: Pull DVC‑tracked raw files
+        run: dvc pull --run-cache
 
-      - name: Validate DVC pipeline
-        run: dvc repro --dry
+      - name: Run data ingestion
+        run: python src/AdEva_final/pipeline/data_ingestion.py
+
+      - name: Run data transformation
+        run: python src/AdEva_final/pipeline/data_transformation.py
+
+      - name: Train the model
+        run: python src/AdEva_final/pipeline/model_trainer.py
+
+      - name: Evaluate the model
+        run: python src/AdEva_final/pipeline/evaluation.py
 
       - name: Run tests
         run: pytest --maxfail=1 -q
-        continue-on-error: true

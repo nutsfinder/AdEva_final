@@ -14,87 +14,87 @@ stages:
       nfiles: 3
     - path: src/AdEva_final/pipeline/data_ingestion.py
       hash: md5
-      md5: 36a7efe48c5e59ce9dc0af18e36d58a2
-      size: 1337
+      md5: bb7a61135cb1c677c178841cf1f97d09
+      size: 2333
     outs:
     - path: data/ingested/test.csv
       hash: md5
-      md5: d86a752bd19be84e43d424e2cf8643d1
-      size: 43337678
+      md5: c23df1981acacb6431f0aa5c02b54ad8
+      size: 44568551
     - path: data/ingested/train.csv
       hash: md5
-      md5: e160fe367a177f829e5f632563972faa
-      size: 176996875
+      md5: 34b743e32e0b75c030ea9f173b44cfcc
+      size: 178376048
   transform:
     cmd: python src/AdEva_final/pipeline/data_transformation.py
     deps:
     - path: data/ingested/test.csv
       hash: md5
-      md5: d86a752bd19be84e43d424e2cf8643d1
-      size: 43337678
+      md5: c23df1981acacb6431f0aa5c02b54ad8
+      size: 44568551
     - path: data/ingested/train.csv
       hash: md5
-      md5: e160fe367a177f829e5f632563972faa
-      size: 176996875
+      md5: 34b743e32e0b75c030ea9f173b44cfcc
+      size: 178376048
     - path: params.yaml
       hash: md5
-      md5: d9517d4e9f906d5649d5be7acedd5420
-      size: 67
+      md5: bd01013edd0c8c6049fc5dc5c089f398
+      size: 176
     - path: src/AdEva_final/pipeline/data_transformation.py
       hash: md5
-      md5: ee94cf051a7a428eeb9a668dc0647ddc
-      size: 3500
+      md5: 7dbc73f55d5d7034acea4eb769ce4072
+      size: 4967
     outs:
     - path: artifacts/scaler.pkl
       hash: md5
-      md5: 057b9dff8cf841bf8fffc735bf361be8
-      size: 474
+      md5: 348e55dad4d3710b393842d4b7c36b40
+      size: 624
     - path: data/transformed/X_test.npy
       hash: md5
-      md5: ff24aaf04cabf763c1bfb08e416a8199
-      size: 31045184
+      md5: 354f4a4bcc1c599a2c9e3e4cac29251d
+      size: 18993152
     - path: data/transformed/X_train.npy
       hash: md5
-      md5: f102345970c1c9bce96ac7d2a1dbfcb2
-      size: 124196288
+      md5: fe7bddd157b8d04ff870b2bd107b5cbe
+      size: 72550496
     - path: data/transformed/y_test.npy
       hash: md5
-      md5: 5ead036a74fa7d04d243d7fc71fa5bcd
-      size: 1293672
+      md5: 5d59f4ef6a866ef880dae833ee708770
+      size: 1846672
     - path: data/transformed/y_train.npy
       hash: md5
-      md5: 1f01247929f0147e0e65e3114d299bef
-      size: 5174968
+      md5: 5769f77cba1b40ada0d2290f28873a5f
+      size: 7053636
   train:
     cmd: python src/AdEva_final/pipeline/model_trainer.py
     deps:
     - path: data/transformed
       hash: md5
-      md5: 7d08f02019a99a94179ac69a589960d3.dir
-      size: 161710166
+      md5: b93cedee4ba38915055bbda3db1a81c2.dir
+      size: 100444010
       nfiles: 5
     - path: src/AdEva_final/pipeline/model_trainer.py
       hash: md5
-      md5: 3512371e4219814a32fb0939922e4d4b
-      size: 3434
+      md5: c35173fe8f31663d7e0af6905185c2c6
+      size: 5736
     outs:
     - path: artifacts/models/transformer_forecast.pt
       hash: md5
-      md5: d9036dcafed03c53ba9f28b2a757f362
-      size: 8888
+      md5: 7387d021aafeb05bd148e9e42545500f
+      size: 1561068
   evaluate:
     cmd: python src/AdEva_final/pipeline/evaluation.py
     deps:
     - path: artifacts/models/transformer_forecast.pt
       hash: md5
-      md5: d9036dcafed03c53ba9f28b2a757f362
-      size: 8888
+      md5: 7387d021aafeb05bd148e9e42545500f
+      size: 1561068
     - path: src/AdEva_final/pipeline/evaluation.py
       hash: md5
-      md5: 2a143f02be45be2ef88dc3cae25858f8
-      size: 2328
+      md5: 89267f3b2fee2e040621aeb651899f91
+      size: 4776
     outs:
     - path: artifacts/metrics/report.json
       hash: md5
-      md5: 956ec51a4995f581018905781bff5563
-      size: 72
+      md5: ef6e134fe8d60d599eed75d55c012983
+      size: 70
