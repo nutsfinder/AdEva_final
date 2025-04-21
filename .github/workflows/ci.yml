@@ -1,4 +1,3 @@
-# .github/workflows/ci.yml
 name: Forecasting CI (Self‑Hosted)
 
 on:
@@ -11,7 +10,6 @@ jobs:
   ci:
     runs-on: [self-hosted, windows]
     env:
-      # so that `import AdEva_final...` works when you run scripts directly
       PYTHONPATH: ${{ github.workspace }}/src
 
     steps:
@@ -39,8 +37,8 @@ jobs:
 
       - name: Configure DVC remote
         run: |
+          # Add (and set default) remote named "local"
           dvc remote add -d local "C:/Users/21652/Desktop/dvc_remote_storage"
-          dvc remote modify --local local push --jobs 4
 
       - name: Pull DVC‑tracked raw files
         run: dvc pull --run-cache
