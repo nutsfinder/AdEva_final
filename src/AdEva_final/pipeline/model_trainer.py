@@ -126,7 +126,7 @@ class ModelTrainer:
             path = os.path.join(self.mt_cfg.model_dir, self.mt_cfg.model_name)
             torch.save(model.state_dict(), path)
             mlflow.pytorch.log_model(model, artifact_path="model")
-            print(f"Model saved → {path}")
+            print(f"Model saved -> {path}")
 
 if __name__ == "__main__":
     cfg    = Configuration()
