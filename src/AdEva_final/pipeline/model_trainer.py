@@ -15,6 +15,7 @@ from AdEva_final.config.configuration import Configuration
 # Positional encoding & transformer model
 # ──────────────────────────────────────────────────────────────────────
 
+
 class PositionalEncoding(nn.Module):
     """Fixed sinusoidal position encodings."""
 
@@ -22,8 +23,9 @@ class PositionalEncoding(nn.Module):
         super().__init__()
         pe = torch.zeros(max_len, d_model)
         pos = torch.arange(max_len, dtype=torch.float).unsqueeze(1)
-        div = torch.exp(torch.arange(0, d_model, 2, dtype=torch.float)
-                        * (-math.log(10000.0) / d_model))
+        div = torch.exp(
+            torch.arange(0, d_model, 2, dtype=torch.float) * (-math.log(10000.0) / d_model)
+        )
         pe[:, 0::2] = torch.sin(pos * div)
         pe[:, 1::2] = torch.cos(pos * div)
         self.register_buffer("pe", pe.unsqueeze(0))
@@ -60,14 +62,15 @@ class TimeSeriesTransformer(nn.Module):
     def forward(self, src: torch.Tensor) -> torch.Tensor:  # (batch, seq_len, feature_size)
         x = self.input_linear(src)
         x = self.pos_encoder(x)
-        x = x.permute(1, 0, 2)   # (seq_len, batch, d_model)
+        x = x.permute(1, 0, 2)  # (seq_len, batch, d_model)
         x = self.encoder(x)
-        return self.head(x[-1])  # use last time step
+        return self.head(x[-1])  # last time step
 
 
 # ──────────────────────────────────────────────────────────────────────
 # Trainer
 # ──────────────────────────────────────────────────────────────────────
+
 
 class ModelTrainer:
     def __init__(self, cfg: Configuration):
@@ -105,18 +108,20 @@ class ModelTrainer:
 
         with mlflow.start_run():
             # log hyper-parameters
-            mlflow.log_params({
-                "window_size":        self.cfg.get_data_transformation_config().window_size,
-                "forecast_horizon":   self.params["forecast_horizon"],
-                "batch_size":         self.mt_cfg.batch_size,
-                "epochs":             self.mt_cfg.epochs,
-                "learning_rate":      self.mt_cfg.learning_rate,
-                "d_model":            self.params["d_model"],
-                "nhead":              self.params["nhead"],
-                "num_encoder_layers": self.params["num_encoder_layers"],
-                "dim_feedforward":    self.params["dim_feedforward"],
-                "dropout":            self.params["dropout"],
-            })
+            mlflow.log_params(
+                {
+                    "window_size": self.cfg.get_data_transformation_config().window_size,
+                    "forecast_horizon": self.params["forecast_horizon"],
+                    "batch_size": self.mt_cfg.batch_size,
+                    "epochs": self.mt_cfg.epochs,
+                    "learning_rate": self.mt_cfg.learning_rate,
+                    "d_model": self.params["d_model"],
+                    "nhead": self.params["nhead"],
+                    "num_encoder_layers": self.params["num_encoder_layers"],
+                    "dim_feedforward": self.params["dim_feedforward"],
+                    "dropout": self.params["dropout"],
+                }
+            )
 
             # training loop
             for epoch in range(self.mt_cfg.epochs):
@@ -131,14 +136,14 @@ class ModelTrainer:
                     running_loss += loss.item()
 
                 avg_loss = running_loss / len(loader)
-                print(f"Epoch {epoch+1}/{self.mt_cfg.epochs} – loss: {avg_loss:.4f}")
+                print(f"Epoch {epoch + 1}/{self.mt_cfg.epochs} - loss: {avg_loss:.4f}")
                 mlflow.log_metric("train_loss", avg_loss, step=epoch)
 
             # save & log
             torch.save(model.state_dict(), pt_path)
             mlflow.pytorch.log_model(model, artifact_path="pytorch-model")
             mlflow.log_artifact(str(pt_path), artifact_path="state-dict")
-            print(f"Model saved → {pt_path}")
+            print(f"Model saved -> {pt_path}")
 
 
 # ──────────────────────────────────────────────────────────────────────
