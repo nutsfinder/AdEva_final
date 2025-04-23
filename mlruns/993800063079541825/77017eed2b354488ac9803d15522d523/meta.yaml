@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/21652/Desktop/AdEva_final/mlruns/77017eed2b354488ac9803d15522d523/artifacts
+end_time: 1745426300780
+entry_point_name: ''
+experiment_id: '993800063079541825'
+lifecycle_stage: active
+run_id: 77017eed2b354488ac9803d15522d523
+run_name: aged-lark-100
+run_uuid: 77017eed2b354488ac9803d15522d523
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745426294237
+status: 3
+tags: []
+user_id: '21652'

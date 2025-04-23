@@ -1,0 +1,32 @@
+name: Forecasting CD
+
+on:
+  workflow_run:
+    workflows: [ "Forecasting CI (Self-Hosted)" ]   # name as in ci.yml
+    types: [ completed ]                            # run when CI is done :contentReference[oaicite:0]{index=0}
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}   # guard-rail
+    runs-on: windows-latest                                         # or self-hosted/linux
+    steps:
+    - name: Download the model artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: transformer-model
+        path: ./artifact
+
+    # ────────────── EXAMPLE DESTINATIONS ──────────────
+    # 1) Copy into the AdEva-ausgrid app repo (if PAT in secrets)
+    - name: Push model to app repository
+      env:
+        TOKEN: ${{ secrets.APP_PAT }}          
+      run: |
+        git clone https://$env:TOKEN@github.com/nutsfinder/AdEva-ausgrid.git app
+        copy artifact\transformer.h5 app\models\transformer.h5
+        cd app
+        git config user.email "ci@github.com"
+        git config user.name  "ci-bot"
+        git add models/transformer.h5
+        git commit -m "CI: update model to $GITHUB_SHA"
+        git push origin main

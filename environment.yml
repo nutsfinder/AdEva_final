@@ -17,3 +17,4 @@ dependencies:
   - pip:
       - dvc>=2.30.0
       - mlflow>=2.0.0
+      - h5py>=3.11
