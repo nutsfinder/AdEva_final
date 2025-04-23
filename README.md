@@ -14,7 +14,6 @@
 | **Experiment Tracking** | Hyper‑params & metrics (loss/epoch) logged to MLflow **remote or local** backend. | `mlflow/` |
 | **Continuous Integration** | `ci.yml` (GitHub Actions) creates the Conda env, runs unit tests, trains on a small subset, uploads `transformer-model` artifact. | `.github/workflows/ci.yml` |
 | **Continuous Deployment** | `cd.yml` downloads the artifact after every green CI run and pushes the fresh `transformer.h5` to any of —<br>1. another GitHub repo (PAT)<br>2. SMB / IIS folder<br>3. S3 / MinIO bucket | `.github/workflows/cd.yml` |
-| **Docker‑free** | Everything runs on bare Conda (Windows‑friendly). Docker is *optional* for prod. |
 
 ---
 
